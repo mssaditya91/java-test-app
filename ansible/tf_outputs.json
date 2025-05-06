@@ -1,0 +1,22 @@
+{
+  "db_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "quickdb"
+  },
+  "db_password": {
+    "sensitive": true,
+    "type": "string",
+    "value": "changeme123"
+  },
+  "db_username": {
+    "sensitive": false,
+    "type": "string",
+    "value": "postgres"
+  },
+  "rds_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "terraform-20250506105636544300000001.ce34amee0khq.us-east-1.rds.amazonaws.com:5432"
+  }
+}

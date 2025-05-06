@@ -1,0 +1,37 @@
+---
+- name: Configure application using Terraform outputs
+  hosts: all
+  become: yes
+
+  vars:
+    tf_outputs: "{{ lookup('file', 'tf_outputs.json') | from_json }}"
+    db_endpoint: "{{ tf_outputs.rds_endpoint.value }}"
+    db_username: "{{ tf_outputs.db_username.value }}"
+    db_password: "{{ tf_outputs.db_password.value }}"
+    db_name: "{{ tf_outputs.db_name.value }}"
+
+  tasks:
+    - name: Print database connection details
+      debug:
+        msg: |
+          DB Endpoint: {{ db_endpoint }}
+          DB Username: {{ db_username }}
+          DB Name: {{ db_name }}
+
+    # Example: Install PostgreSQL client (Debian/Ubuntu)
+    - name: Install PostgreSQL client
+      apt:
+        name: postgresql-client
+        state: present
+      when: ansible_os_family == "Debian"
+
+    # Example: Create a .pgpass file for easy DB access
+    - name: Create .pgpass file
+      copy:
+        dest: /root/.pgpass
+        content: "{{ db_endpoint }}:5432:{{ db_name }}:{{ db_username }}:{{ db_password }}"
+        owner: root
+        group: root
+        mode: '0600'
+
+    # Add your actual app deployment/configuration tasks below!
