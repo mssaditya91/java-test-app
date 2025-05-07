@@ -1,20 +1,20 @@
-variable "aws_region" {
+variable "region" {
   description = "AWS region"
-  type        = string
+  default     = "us-east-1"
 }
 
-variable "db_name" {
-  description = "PostgreSQL database name"
-  type        = string
+variable "vpc_cidr" {
+  description = "VPC CIDR block"
+  default     = "10.10.0.0/16"
 }
 
-variable "db_username" {
-  description = "PostgreSQL username"
-  type        = string
+variable "public_subnet_cidrs" {
+  description = "List of public subnet CIDRs"
+  type        = list(string)
+  default     = ["10.10.1.0/24", "10.10.2.0/24"]
 }
 
-variable "db_password" {
-  description = "PostgreSQL password"
-  type        = string
-  sensitive   = true
+variable "cluster_name" {
+  description = "EKS cluster name"
+  default     = "my-eks-cluster"
 }

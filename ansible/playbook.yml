@@ -1,37 +1,62 @@
----
 - name: Configure application using Terraform outputs
   hosts: all
   become: yes
 
   vars:
     tf_outputs: "{{ lookup('file', 'tf_outputs.json') | from_json }}"
-    db_endpoint: "{{ tf_outputs.rds_endpoint.value }}"
-    db_username: "{{ tf_outputs.db_username.value }}"
-    db_password: "{{ tf_outputs.db_password.value }}"
-    db_name: "{{ tf_outputs.db_name.value }}"
+    eks_cluster_ca_certificate: "{{ tf_outputs.eks_cluster_ca_certificate.value }}"
+    eks_cluster_endpoint: "{{ tf_outputs.eks_cluster_endpoint.value }}"
+    eks_cluster_name: "{{ tf_outputs.eks_cluster_name.value }}"
+    eks_node_group_role_arn: "{{ tf_outputs.eks_node_group_role_arn.value }}"
+    public_subnet_ids: "{{ tf_outputs.public_subnet_ids.value }}"
+    vpc_id: "{{ tf_outputs.vpc_id.value }}"
 
   tasks:
-    - name: Print database connection details
+    - name: Print EKS cluster details
       debug:
         msg: |
-          DB Endpoint: {{ db_endpoint }}
-          DB Username: {{ db_username }}
-          DB Name: {{ db_name }}
+          EKS Cluster Name: {{ eks_cluster_name }}
+          EKS Endpoint: {{ eks_cluster_endpoint }}
+          EKS CA Certificate: {{ eks_cluster_ca_certificate }}
+          EKS Node Group Role ARN: {{ eks_node_group_role_arn }}
+          Public Subnet IDs: {{ public_subnet_ids }}
+          VPC ID: {{ vpc_id }}
 
-    # Example: Install PostgreSQL client (Debian/Ubuntu)
-    - name: Install PostgreSQL client
+    - name: Update apt cache
       apt:
-        name: postgresql-client
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install unzip
+      apt:
+        name: unzip
         state: present
       when: ansible_os_family == "Debian"
 
-    # Example: Create a .pgpass file for easy DB access
-    - name: Create .pgpass file
+    - name: Download AWS CLI v2 installer
+      get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+        mode: '0644'
+      when: ansible_os_family == "Debian"
+
+    - name: Unzip AWS CLI v2 installer
+      unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install AWS CLI v2
+      command: /tmp/aws/install --update
+      args:
+        creates: /usr/local/bin/aws
+      when: ansible_os_family == "Debian"
+
+    - name: Save EKS CA certificate to file
       copy:
-        dest: /root/.pgpass
-        content: "{{ db_endpoint }}:5432:{{ db_name }}:{{ db_username }}:{{ db_password }}"
+        dest: /root/eks-ca.crt
+        content: "{{ eks_cluster_ca_certificate }}"
         owner: root
         group: root
         mode: '0600'
-
-    # Add your actual app deployment/configuration tasks below!

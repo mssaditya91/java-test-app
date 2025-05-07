@@ -1,7 +1,10 @@
 package com.example;
 
+import static spark.Spark.*;
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello, Java App!");
+        port(8080);
+        get("/", (req, res) -> "Hello, Java App!");
     }
 }

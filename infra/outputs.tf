@@ -1,20 +1,23 @@
-output "rds_endpoint" {
-  description = "RDS PostgreSQL endpoint"
-  value       = aws_db_instance.postgres.endpoint
+output "vpc_id" {
+  value = aws_vpc.main.id
 }
 
-output "db_name" {
-  description = "RDS PostgreSQL database name"
-  value       = aws_db_instance.postgres.db_name
+output "public_subnet_ids" {
+  value = aws_subnet.public[*].id
 }
 
-output "db_username" {
-  description = "RDS PostgreSQL username"
-  value       = aws_db_instance.postgres.username
+output "eks_cluster_name" {
+  value = aws_eks_cluster.main.name
 }
 
-output "db_password" {
-  description = "RDS PostgreSQL password"
-  value       = aws_db_instance.postgres.password
-  sensitive   = true
+output "eks_cluster_endpoint" {
+  value = aws_eks_cluster.main.endpoint
+}
+
+output "eks_cluster_ca_certificate" {
+  value = aws_eks_cluster.main.certificate_authority[0].data
+}
+
+output "eks_node_group_role_arn" {
+  value = aws_iam_role.eks_node_role.arn
 }

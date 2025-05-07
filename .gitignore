@@ -1,19 +1,40 @@
-# Java
-*.class
-*.jar
-*.war
-*.ear
-
 # Maven
 target/
+.settings.xml
 
-# IDEs
+# Docker
+*.tar
+
+# IntelliJ IDEA
 .idea/
 *.iml
-*.ipr
-*.iws
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+*.swp
 *.log
-out/
-bin/
-.terraform/
+
+# Terraform
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/tf_outputs.json
+infra/.terraform/
+
+# AWS CLI installer
+infra/awscliv2.zip
+infra/aws/
+
+# Helm chart (if generated, not source)
+helm-chart/
+
+# GitHub Actions (if not source)
+.github/
+
+# Sensitive files
+settings.xml
+
+target/
 

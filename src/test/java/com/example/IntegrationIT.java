@@ -3,9 +3,9 @@ package com.example;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AppTest {
+public class IntegrationIT {
     @Test
-    void dummyTest() {
-        assertTrue(true, "Basic unit test always passes.");
+    void dummyIntegrationTest() {
+        assertTrue(true, "Dummy integration test always passes.");
     }
 }
